@@ -4,14 +4,14 @@ from abc import ABC, abstractmethod
 
 
 class Validator(ABC):
-    def __set_name__(self, owner, name: str) -> None:
-        self.protected_name = '_' + name
+    def __set_name__(self, owner: BurgerRecipe, name: str) -> None:
+        self.protected_name = "_" + name
 
-    def __get__(self, obj, objtype) -> int | str:
+    def __get__(self, obj: BurgerRecipe, objtype: int | str) -> int | str:
         value = getattr(obj, self.protected_name)
         return value
 
-    def __set__(self, obj, value) -> None:
+    def __set__(self, obj: BurgerRecipe, value: int | str) -> None:
         self.validate(value)
         setattr(obj, self.protected_name, value)
 
@@ -30,7 +30,9 @@ class Number(Validator):
             raise TypeError("Quantity should be integer.")
 
         if value not in range(self.min_value, self.max_value + 1):
-            raise ValueError(f"Quantity should not be less than {self.min_value} and greater than {self.max_value}.")
+            raise ValueError(f"Quantity should not be less than "
+                             f"{self.min_value} and greater than "
+                             f"{self.max_value}.")
 
 
 class OneOf(Validator):
@@ -62,5 +64,5 @@ class BurgerRecipe:
     cheese = Number(0, 2)
     tomatoes = Number(0, 3)
     cutlets = Number(1, 3)
-    eggs = Number(0,2)
+    eggs = Number(0, 2)
     sauce = OneOf(["ketchup", "mayo", "burger"])
